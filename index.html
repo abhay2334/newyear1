@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARNING: EXTREME NEW YEAR</title>
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Extreme Neon Shaking Text */
+        .neon-text {
+            font-size: 10vw;
+            color: #fff;
+            text-align: center;
+            text-shadow: 
+                0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ffff00, 
+                0 0 40px #ffff00, 0 0 80px #ffff00, 0 0 100px #ffff00;
+            z-index: 100;
+            display: none;
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            40% { transform: translate(3px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            80% { transform: translate(3px, 1px) rotate(1deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .banana {
+            position: fixed;
+            font-size: 60px;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #444, #000);
+            color: yellow;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            font-size: 2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <h1>⚠️ SYSTEM UPDATE ⚠️</h1>
+        <p>Click to install New Year 2025</p>
+    </div>
+
+    <h1 class="neon-text" id="main-text">
+        HAPPY NEW YEAR<br>LAUDE 🍌
+    </h1>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+        const mainText = document.getElementById('main-text');
+
+        // This creates a "Procedural Scream" using the browser's oscillators
+        function playFunnyScream() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth'; // Harsh, buzzy sound
+            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            // Slide the pitch up rapidly like a scream
+            osc.frequency.exponentialRampToValueAtTime(3000, audioCtx.currentTime + 0.5);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1.5);
+
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.5);
+        }
+
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            mainText.style.display = 'block';
+            
+            // Play the "Scream"
+            playFunnyScream();
+            
+            // Secondary Backup Funny Sound (Cartoon Boing)
+            const boing = new Audio('https://www.myinstants.com/media/sounds/vibrant-game-fist-hit-thump-1-186716.mp3');
+            boing.play();
+
+            startBananaStorm();
+        });
+
+        function startBananaStorm() {
+            setInterval(() => {
+                const banana = document.createElement('div');
+                banana.classList.add('banana');
+                banana.innerText = Math.random() > 0.5 ? '🍌' : '🤡';
+                banana.style.left = Math.random() * 100 + 'vw';
+                
+                const size = Math.random() * 80 + 30;
+                banana.style.fontSize = size + 'px';
+                
+                document.body.appendChild(banana);
+
+                let top = -100;
+                let sideShift = (Math.random() - 0.5) * 10;
+                let currentLeft = parseFloat(banana.style.left);
+
+                const fallInterval = setInterval(() => {
+                    top += 10;
+                    currentLeft += sideShift;
+                    banana.style.top = top + 'px';
+                    banana.style.left = currentLeft + 'vw';
+                    banana.style.transform = `rotate(${top * 2}deg)`;
+                    
+                    if (top > window.innerHeight + 100) {
+                        clearInterval(fallInterval);
+                        banana.remove();
+                    }
+                }, 20);
+            }, 80); 
+        }
+    </script>
+</body>
+</html>
