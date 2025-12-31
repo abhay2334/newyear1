@@ -3,154 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 UNLOCKED</title>
+    <title>2025 FORTUNE TELLER</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Courier New', Courier, monospace; }
+        body { margin: 0; background: #111; color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
         
-        /* The Bait Screen */
-        #overlay {
-            position: fixed; inset: 0; background: radial-gradient(circle, #222, #000);
-            color: #0f0; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; z-index: 9999; cursor: pointer; text-align: center;
+        #slot-machine {
+            border: 10px solid gold; border-radius: 20px; background: #222;
+            padding: 40px; text-align: center; box-shadow: 0 0 50px gold;
+            transition: all 0.5s; position: relative; z-index: 10;
         }
 
-        /* Neon Text Chaos */
-        .neon-laude {
-            position: absolute; font-weight: bold; text-transform: uppercase;
-            text-shadow: 0 0 10px #fff, 0 0 20px #ff00de, 0 0 40px #ff00de;
-            color: white; pointer-events: none; z-index: 100;
-            animation: shake 0.1s infinite;
+        .screen {
+            background: black; font-size: 80px; padding: 20px;
+            margin: 20px 0; border: 5px inset #444; min-width: 300px; height: 120px;
         }
 
-        /* Falling Bananas */
-        .banana { position: fixed; font-size: 50px; z-index: 50; pointer-events: none; }
-
-        /* Screen Breaking Effect */
-        #glitch-overlay {
-            position: fixed; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
-            display: none; z-index: 1000; pointer-events: none;
+        button {
+            background: linear-gradient(to bottom, #ff0, #cc0); border: none;
+            padding: 20px 40px; font-size: 20px; font-weight: bold;
+            cursor: pointer; border-radius: 50px; box-shadow: 0 5px 0 #990;
         }
 
-        /* The Final Heart */
-        #final-heart {
-            display: none; position: fixed; inset: 0; background: black;
-            justify-content: center; align-items: center; flex-direction: column;
-            z-index: 10000; color: red; font-size: 150px; text-shadow: 0 0 50px red;
+        button:active { transform: translateY(5px); box-shadow: none; }
+
+        /* Neon Text for the reveal */
+        .neon-reveal {
+            display: none; font-size: 5vw; color: #fff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+            animation: vibrate 0.1s infinite;
         }
 
-        @keyframes shake {
-            0% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, -2px); }
-            100% { transform: translate(2px, -2px); }
+        @keyframes vibrate {
+            0% { transform: translate(0); }
+            50% { transform: translate(5px, -5px); }
+            100% { transform: translate(-5px, 5px); }
         }
 
-        .rainbow-bg { animation: colorShift 2s infinite; }
-        @keyframes colorShift {
-            0% { background: #ff000033; }
-            33% { background: #00ff0033; }
-            66% { background: #0000ff33; }
-            100% { background: #ff000033; }
+        .heart { font-size: 150px; display: none; color: red; text-shadow: 0 0 30px red; }
+
+        /* Full screen banana rain */
+        .falling-banana {
+            position: fixed; font-size: 40px; z-index: 1; pointer-events: none;
         }
     </style>
 </head>
-<body class="rainbow-bg">
+<body>
 
-    <div id="overlay">
-        <h1 style="font-size: 3rem;">⚠️ CRITICAL ERROR ⚠️</h1>
-        <p>Your 2024 has expired. Click to force-install 2025.</p>
+    <div id="slot-machine">
+        <h2 id="header">2025 LUCK GENERATOR</h2>
+        <div class="screen" id="reel">❓</div>
+        <button id="spin-btn">SPIN FOR DESTINY</button>
     </div>
 
-    <div id="glitch-overlay"></div>
-    
-    <div id="final-heart">
-        ❤️
-        <p style="font-size: 20px; color: white; text-shadow: none; font-family: sans-serif;">Happy New Year, meri jaan.</p>
+    <div id="final-zone" style="display:none; text-align:center; z-index:100;">
+        <h1 class="neon-reveal" id="laude-text">HAPPY NEW YEAR LAUDE</h1>
+        <div class="heart" id="heart">❤️</div>
     </div>
 
     <script>
-        const overlay = document.getElementById('overlay');
-        const heart = document.getElementById('final-heart');
-        const glitch = document.getElementById('glitch-overlay');
+        const spinBtn = document.getElementById('spin-btn');
+        const reel = document.getElementById('reel');
+        const slot = document.getElementById('slot-machine');
+        const finalZone = document.getElementById('final-zone');
+        const laudeText = document.getElementById('laude-text');
+        const heart = document.getElementById('heart');
 
-        function playInfiniteScream() {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-
-            osc.type = 'sawtooth';
+        function playScream() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square'; // Very annoying buzz
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
+            gain.connect(ctx.destination);
             osc.start();
-
-            // Continuous Siren Effect
+            
+            // Continuous frequency modulation (Siren/Scream)
             setInterval(() => {
-                const now = audioCtx.currentTime;
-                osc.frequency.exponentialRampToValueAtTime(150, now + 0.5);
-                osc.frequency.exponentialRampToValueAtTime(1500, now + 1);
-            }, 1000);
-        }
-
-        overlay.addEventListener('click', () => {
-            overlay.style.display = 'none';
-            playInfiniteScream();
-            startChaos();
-        });
-
-        function startChaos() {
-            let count = 0;
-            const maxElements = 150; // How many things before it "breaks"
-
-            const interval = setInterval(() => {
-                count++;
-                
-                // Spawn Text
-                const txt = document.createElement('div');
-                txt.className = 'neon-laude';
-                txt.innerText = 'HAPPY NEW YEAR LAUDE';
-                txt.style.left = Math.random() * 80 + '%';
-                txt.style.top = Math.random() * 90 + '%';
-                txt.style.fontSize = (Math.random() * 4 + 1) + 'vw';
-                txt.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                document.body.appendChild(txt);
-
-                // Spawn Banana
-                const b = document.createElement('div');
-                b.className = 'banana';
-                b.innerText = '🍌';
-                b.style.left = Math.random() * 100 + 'vw';
-                b.style.top = '-100px';
-                document.body.appendChild(b);
-                
-                // Falling physics
-                let pos = -100;
-                const fall = setInterval(() => {
-                    pos += 15;
-                    b.style.top = pos + 'px';
-                    if (pos > window.innerHeight) {
-                        clearInterval(fall);
-                        b.remove();
-                    }
-                }, 20);
-
-                // BREAK THE SCREEN
-                if (count > maxElements) {
-                    clearInterval(interval);
-                    triggerBreak();
-                }
+                osc.frequency.setValueAtTime(Math.random() * 1000 + 200, ctx.currentTime);
             }, 50);
         }
 
-        function triggerBreak() {
-            glitch.style.display = 'block';
-            document.body.style.filter = 'invert(1) contrast(5)';
+        spinBtn.addEventListener('click', () => {
+            spinBtn.style.display = 'none';
+            let speed = 50;
+            let symbols = ['🍌', '🍒', '💎', '7️⃣', '🍌', '🤡'];
             
+            // Spinning Animation
+            let spinInterval = setInterval(() => {
+                reel.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                slot.style.transform = `rotate(${Math.random() * 4 - 2}deg) scale(${1 + (speed/500)})`;
+            }, 50);
+
+            // The "Breakdown" after 3 seconds
             setTimeout(() => {
-                // Final reveal
-                heart.style.display = 'flex';
-                // Silence the audio context would go here, 
-                // but you asked for continuous, so the siren keeps going!
-            }, 2000);
+                clearInterval(spinInterval);
+                playScream();
+                reel.innerText = '🍌';
+                reel.style.color = 'yellow';
+                
+                // Melt the slot machine
+                slot.style.transition = '2s';
+                slot.style.transform = 'translateY(1000px) rotate(45deg)';
+                slot.style.opacity = '0';
+
+                // Reveal the funny message
+                setTimeout(() => {
+                    slot.style.display = 'none';
+                    finalZone.style.display = 'block';
+                    laudeText.style.display = 'block';
+                    
+                    // Rain Bananas
+                    setInterval(spawnBanana, 100);
+
+                    // Show heart after 3 seconds of chaos
+                    setTimeout(() => {
+                        heart.style.display = 'block';
+                    }, 3000);
+                }, 500);
+            }, 3000);
+        });
+
+        function spawnBanana() {
+            const b = document.createElement('div');
+            b.className = 'falling-banana';
+            b.innerText = '🍌';
+            b.style.left = Math.random() * 100 + 'vw';
+            b.style.top = '-50px';
+            document.body.appendChild(b);
+            
+            let pos = -50;
+            let fall = setInterval(() => {
+                pos += 10;
+                b.style.top = pos + 'px';
+                b.style.transform = `rotate(${pos}deg)`;
+                if(pos > window.innerHeight) {
+                    clearInterval(fall);
+                    b.remove();
+                }
+            }, 20);
         }
     </script>
 </body>
