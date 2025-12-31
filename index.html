@@ -3,147 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WARNING: EXTREME NEW YEAR</title>
+    <title>2025 UNLOCKED</title>
     <style>
-        body {
-            background-color: #000;
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Courier New', Courier, monospace; }
+        
+        /* The Bait Screen */
+        #overlay {
+            position: fixed; inset: 0; background: radial-gradient(circle, #222, #000);
+            color: #0f0; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 9999; cursor: pointer; text-align: center;
         }
 
-        /* Extreme Neon Shaking Text */
-        .neon-text {
-            font-size: 10vw;
-            color: #fff;
-            text-align: center;
-            text-shadow: 
-                0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ffff00, 
-                0 0 40px #ffff00, 0 0 80px #ffff00, 0 0 100px #ffff00;
-            z-index: 100;
-            display: none;
+        /* Neon Text Chaos */
+        .neon-laude {
+            position: absolute; font-weight: bold; text-transform: uppercase;
+            text-shadow: 0 0 10px #fff, 0 0 20px #ff00de, 0 0 40px #ff00de;
+            color: white; pointer-events: none; z-index: 100;
             animation: shake 0.1s infinite;
         }
 
+        /* Falling Bananas */
+        .banana { position: fixed; font-size: 50px; z-index: 50; pointer-events: none; }
+
+        /* Screen Breaking Effect */
+        #glitch-overlay {
+            position: fixed; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+            display: none; z-index: 1000; pointer-events: none;
+        }
+
+        /* The Final Heart */
+        #final-heart {
+            display: none; position: fixed; inset: 0; background: black;
+            justify-content: center; align-items: center; flex-direction: column;
+            z-index: 10000; color: red; font-size: 150px; text-shadow: 0 0 50px red;
+        }
+
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            40% { transform: translate(3px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            80% { transform: translate(3px, 1px) rotate(1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, -2px); }
+            100% { transform: translate(2px, -2px); }
         }
 
-        .banana {
-            position: fixed;
-            font-size: 60px;
-            z-index: 50;
-            pointer-events: none;
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #444, #000);
-            color: yellow;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            cursor: pointer;
-            font-size: 2rem;
-            text-align: center;
+        .rainbow-bg { animation: colorShift 2s infinite; }
+        @keyframes colorShift {
+            0% { background: #ff000033; }
+            33% { background: #00ff0033; }
+            66% { background: #0000ff33; }
+            100% { background: #ff000033; }
         }
     </style>
 </head>
-<body>
+<body class="rainbow-bg">
 
     <div id="overlay">
-        <h1>⚠️ SYSTEM UPDATE ⚠️</h1>
-        <p>Click to install New Year 2025</p>
+        <h1 style="font-size: 3rem;">⚠️ CRITICAL ERROR ⚠️</h1>
+        <p>Your 2024 has expired. Click to force-install 2025.</p>
     </div>
 
-    <h1 class="neon-text" id="main-text">
-        HAPPY NEW YEAR<br>LAUDE 🍌
-    </h1>
+    <div id="glitch-overlay"></div>
+    
+    <div id="final-heart">
+        ❤️
+        <p style="font-size: 20px; color: white; text-shadow: none; font-family: sans-serif;">Happy New Year, meri jaan.</p>
+    </div>
 
     <script>
         const overlay = document.getElementById('overlay');
-        const mainText = document.getElementById('main-text');
+        const heart = document.getElementById('final-heart');
+        const glitch = document.getElementById('glitch-overlay');
 
-        // This creates a "Procedural Scream" using the browser's oscillators
-        function playFunnyScream() {
+        function playInfiniteScream() {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            osc.type = 'sawtooth'; // Harsh, buzzy sound
-            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            // Slide the pitch up rapidly like a scream
-            osc.frequency.exponentialRampToValueAtTime(3000, audioCtx.currentTime + 0.5);
-            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1.5);
-
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
-
+            osc.type = 'sawtooth';
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc.start();
-            osc.stop(audioCtx.currentTime + 1.5);
+
+            // Continuous Siren Effect
+            setInterval(() => {
+                const now = audioCtx.currentTime;
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.5);
+                osc.frequency.exponentialRampToValueAtTime(1500, now + 1);
+            }, 1000);
         }
 
         overlay.addEventListener('click', () => {
             overlay.style.display = 'none';
-            mainText.style.display = 'block';
-            
-            // Play the "Scream"
-            playFunnyScream();
-            
-            // Secondary Backup Funny Sound (Cartoon Boing)
-            const boing = new Audio('https://www.myinstants.com/media/sounds/vibrant-game-fist-hit-thump-1-186716.mp3');
-            boing.play();
-
-            startBananaStorm();
+            playInfiniteScream();
+            startChaos();
         });
 
-        function startBananaStorm() {
-            setInterval(() => {
-                const banana = document.createElement('div');
-                banana.classList.add('banana');
-                banana.innerText = Math.random() > 0.5 ? '🍌' : '🤡';
-                banana.style.left = Math.random() * 100 + 'vw';
-                
-                const size = Math.random() * 80 + 30;
-                banana.style.fontSize = size + 'px';
-                
-                document.body.appendChild(banana);
+        function startChaos() {
+            let count = 0;
+            const maxElements = 150; // How many things before it "breaks"
 
-                let top = -100;
-                let sideShift = (Math.random() - 0.5) * 10;
-                let currentLeft = parseFloat(banana.style.left);
+            const interval = setInterval(() => {
+                count++;
+                
+                // Spawn Text
+                const txt = document.createElement('div');
+                txt.className = 'neon-laude';
+                txt.innerText = 'HAPPY NEW YEAR LAUDE';
+                txt.style.left = Math.random() * 80 + '%';
+                txt.style.top = Math.random() * 90 + '%';
+                txt.style.fontSize = (Math.random() * 4 + 1) + 'vw';
+                txt.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(txt);
 
-                const fallInterval = setInterval(() => {
-                    top += 10;
-                    currentLeft += sideShift;
-                    banana.style.top = top + 'px';
-                    banana.style.left = currentLeft + 'vw';
-                    banana.style.transform = `rotate(${top * 2}deg)`;
-                    
-                    if (top > window.innerHeight + 100) {
-                        clearInterval(fallInterval);
-                        banana.remove();
+                // Spawn Banana
+                const b = document.createElement('div');
+                b.className = 'banana';
+                b.innerText = '🍌';
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.top = '-100px';
+                document.body.appendChild(b);
+                
+                // Falling physics
+                let pos = -100;
+                const fall = setInterval(() => {
+                    pos += 15;
+                    b.style.top = pos + 'px';
+                    if (pos > window.innerHeight) {
+                        clearInterval(fall);
+                        b.remove();
                     }
                 }, 20);
-            }, 80); 
+
+                // BREAK THE SCREEN
+                if (count > maxElements) {
+                    clearInterval(interval);
+                    triggerBreak();
+                }
+            }, 50);
+        }
+
+        function triggerBreak() {
+            glitch.style.display = 'block';
+            document.body.style.filter = 'invert(1) contrast(5)';
+            
+            setTimeout(() => {
+                // Final reveal
+                heart.style.display = 'flex';
+                // Silence the audio context would go here, 
+                // but you asked for continuous, so the siren keeps going!
+            }, 2000);
         }
     </script>
 </body>
